@@ -1,30 +1,53 @@
-# Metro Calculator - Android App
+# Metro Pet (Metrogotchi)
 
-A beautiful calculator app for Android with a Metro UI design, built with Svelte and Capacitor. Features both basic and scientific calculator modes that automatically switch based on device orientation.
+A virtual pet application inspired by Tamagotchi, built with Svelte and Capacitor. Create, care for, and customize your own virtual pet with ASCII art animations, stat management, and a beautiful Metro UI design.
 
 ## Features
 
-- 🧮 **Basic Calculator** (Portrait mode) - Standard arithmetic operations
-- 🔬 **Scientific Calculator** (Landscape mode) - Advanced mathematical functions
-- 📱 **Native Android app** experience
-- 🎨 **Metro UI design** language with dark theme
-- 🔄 **Automatic orientation detection** - Switches between basic and scientific modes
-- ✨ **Smooth animations** - Flip-in page animation on app launch
-- 📊 **Custom status bar** - Fullscreen mode with custom UI
-- 💾 **Memory functions** - MC, MR, M+ for memory operations
-- 📐 **Angle modes** - Degrees, Radians, and Gradians support
+### 🐾 Core Features
+- **Virtual Pet Management** - Create and care for your own virtual pet
+- **Stat System** - Track happiness, hunger, energy, and cleanliness
+- **Dynamic Pet States** - Pets have moods (happy, sad, hungry, tired, sleepy, dirty) and statuses (present, away, sleeping)
+- **Pet Actions** - Feed, play, clean, and put your pet to sleep
+- **Age Tracking** - Your pet ages over time, displayed in minutes, hours, and days
+
+### 🎨 Customization
+- **6 Preset Pets** - Choose from Metrocon, Tweety, Meowth, Pakkun, Bugs, or Kowalski
+- **Custom Pet Creator** - Design your own pet with custom ASCII art animations
+- **Animation System** - Define multiple animations per pet:
+  - Normal/happy face
+  - Idle animations (0 to n animations, each with 1 to n frames)
+  - Hungry animation
+  - Sleeping animation
+  - Dirty animation
+  - Sad animation
+  - Away animations (depressed/gone out to play, hungry/gone hunting)
+  - Fall asleep animation (tired)
+  - Action animations (feed, clean, play)
+
+### 🎬 Animations
+- **Multi-frame Animations** - Each animation can have 1 to n frames that cycle automatically
+- **State-based Animations** - Animations change based on pet mood, status, and actions
+- **Idle Animation System** - Multiple idle animations that cycle when the pet is in normal state
+- **Real-time Preview** - Preview custom pet animations as you create them
+
+### 📱 UI/UX
+- **Metro UI Design** - Clean, modern interface with dark theme
+- **Flip Animations** - Smooth page transitions with flip-in/flip-out effects
+- **Responsive Layout** - Works on mobile and desktop
+- **Native Android Support** - Built with Capacitor for Android deployment
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
 - **Node.js** (v18 or higher)
-- **pnpm** (package manager)
-- **Android Studio** (for Android development)
-- **Java Development Kit (JDK)** (version 17 or higher)
-- **Android SDK** (API level 33 or higher)
+- **pnpm** (package manager) - or npm/yarn
+- **Android Studio** (for Android development, optional)
+- **Java Development Kit (JDK)** (version 17 or higher, for Android)
+- **Android SDK** (API level 33 or higher, for Android)
 
-## Setup
+## Installation
 
 ### 1. Install Dependencies
 
@@ -32,45 +55,126 @@ Before you begin, ensure you have the following installed:
 pnpm install
 ```
 
-### 2. Build the Web App
+### 2. Development
 
-```bash
-pnpm run build
-```
-
-### 3. Sync with Android
-
-```bash
-pnpm run android:sync
-```
-
-This will create the Android project in the `android/` directory if it doesn't exist.
-
-### 4. Open in Android Studio
-
-```bash
-pnpm run android:open
-```
-
-Or manually open the `android/` folder in Android Studio.
-
-## Development
-
-### Run Web Development Server
+Run the development server:
 
 ```bash
 pnpm run dev
 ```
 
-This starts a development server at `http://localhost:7773`.
+The app will be available at `http://localhost:7773` (or the next available port).
 
-### Build and Sync Android
+### 3. Build for Production
 
 ```bash
-pnpm run android:build
+pnpm run build
 ```
 
-This builds the web app and syncs it with the Android project.
+## Project Structure
+
+```
+metro-pet/
+├── src/
+│   ├── components/              # Reusable UI components
+│   │   ├── ActionsPanel.svelte      # Action buttons (feed, play, clean, sleep, configure)
+│   │   ├── AnimatedPetDisplay.svelte # Pet animation renderer with frame cycling
+│   │   ├── Button.svelte            # Button component
+│   │   ├── CustomPetEditor.svelte   # Custom pet animation editor
+│   │   ├── Input.svelte             # Input field component
+│   │   ├── PetDisplay.svelte        # Pet display wrapper component
+│   │   ├── StatBar.svelte           # Individual stat bar component
+│   │   └── StatsDisplay.svelte      # Stats display container
+│   ├── pages/                  # Page components
+│   │   ├── CustomPetPage.svelte     # Custom pet creation/editing page
+│   │   ├── PetPage.svelte           # Main pet viewing/interaction page
+│   │   ├── SetupPage.svelte         # Pet setup/configuration page
+│   │   └── StatusBar.svelte         # Custom status bar (if used)
+│   ├── utils/                  # Utility functions
+│   │   └── petAnimations.js         # Animation system and preset definitions
+│   ├── App.svelte              # Main app component with routing
+│   ├── main.js                 # Application entry point
+│   └── app.css                 # Global styles
+├── public/                     # Static assets
+│   ├── logo.png
+│   ├── metrocon.jpg            # Pet type images
+│   ├── tweety.webp
+│   ├── meowth.avif
+│   ├── pakkun.webp
+│   ├── bugs.jpg
+│   └── kowalski.webp
+├── android/                    # Android project (generated by Capacitor)
+├── assets/                     # App icons and splash screens
+├── capacitor.config.ts         # Capacitor configuration
+├── vite.config.js              # Vite build configuration
+├── tailwind.config.js          # Tailwind CSS configuration
+└── package.json                # Dependencies and scripts
+```
+
+## How It Works
+
+### Pet State Management
+
+Pets have four main stats that change over time:
+- **Happiness** (0-100): Decreases slowly over time, increases with interactions
+- **Hunger** (0-100): Increases over time, decreases when fed
+- **Energy** (0-100): Decreases when playing, increases when sleeping
+- **Cleanliness** (0-100): Decreases slowly, increases when cleaned
+
+### Pet Behaviors
+
+Pets automatically:
+- **Leave when too happy** - If happiness reaches 100 and the pet is unattended for 30 seconds, it leaves to look for company (returns after 2 minutes)
+- **Leave when too hungry** - If hunger reaches 100, the pet leaves to hunt for food (returns after 2 minutes)
+- **Sleep when tired** - If energy reaches 0, the pet falls asleep (sleeps for 2 minutes)
+- **Wet the floor** - If cleanliness reaches 100, the pet wets the floor and cleanliness resets to 0
+
+### Animation System
+
+The animation system uses a hierarchical structure:
+
+1. **Action Animations** (highest priority) - Play when user interacts (feed, clean, play)
+2. **Event Animations** - Play for special events (pee, etc.)
+3. **Status Animations** - Play based on pet status (sleeping, away)
+4. **Mood Animations** - Play based on pet mood (hungry, dirty, sad, sleeping)
+5. **Normal/Idle Animations** (default) - Play when pet is in normal state
+
+Animations are stored as arrays of frames (strings). Multi-frame animations cycle automatically at 500ms per frame.
+
+### Data Storage
+
+All pet data is stored in `localStorage`:
+- `pet_name` - Pet's name
+- `pet_type` - Pet type (preset ID or "custom")
+- `pet_created_at` - Timestamp when pet was created
+- `pet_stats` - Current stats, mood, status, and last saved timestamp
+- `pet_events` - Event history (last 50 events)
+- `custom_pet_data` - Custom pet animation data (only for custom pets)
+- `last_seen_event_time` - Last event timestamp the user has seen
+
+## Android Development
+
+### Setup
+
+1. Build the web app:
+```bash
+pnpm run build
+```
+
+2. Sync with Android:
+```bash
+pnpm run android:sync
+```
+
+3. Open in Android Studio:
+```bash
+pnpm run android:open
+```
+
+Or use the combined command:
+```bash
+pnpm run android:run
+```
 
 ### Build APK
 
@@ -78,151 +182,77 @@ This builds the web app and syncs it with the Android project.
 pnpm run android:apk
 ```
 
-This builds the web app, syncs with Android, and generates a debug APK at `android/app/build/outputs/apk/debug/app-debug.apk`.
+The APK will be generated at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
-### Run on Android Device/Emulator
+## Custom Pet Creation
 
-1. Open the project in Android Studio
-2. Connect an Android device or start an emulator
-3. Click the "Run" button in Android Studio
+To create a custom pet:
 
-## Project Structure
+1. Click the "Custom Pet" button on the Setup page
+2. Define animations for different states:
+   - **Normal Face** (required): The default happy face
+   - **Idle Animations**: Optional animations that cycle when pet is idle (can have 0 to n animations, each with 1 to n frames)
+   - **Hungry**: Animation when pet is hungry
+   - **Sleeping**: Animation when pet is sleeping
+   - **Dirty**: Animation when pet is dirty
+   - **Sad**: Animation when pet is sad
+   - **Away**: Animation when pet is away (depressed/gone out to play)
+   - **Away Hungry**: Animation when pet is away and hungry (gone hunting)
+   - **Fall Asleep**: Animation when pet falls asleep from being tired
+   - **Feed/Clean/Play**: Action animations for interactions
 
-```
-metro-calculator/
-├── src/
-│   ├── pages/
-│   │   ├── CalculatorPage.svelte    # Main calculator component
-│   │   └── Statusbar.svelte          # Custom status bar
-│   ├── App.svelte                    # Main app component
-│   ├── main.js                       # Entry point
-│   └── app.css                       # Global styles
-├── android/                          # Android project (generated by Capacitor)
-├── assets/                           # App icons and splash screens
-├── capacitor.config.ts               # Capacitor configuration
-├── vite.config.js                    # Vite build configuration
-└── package.json                      # Dependencies and scripts
-```
+3. Each animation can have multiple frames (1 to n). Frames cycle at 500ms intervals.
+4. Preview updates in real-time as you type
+5. Save your custom pet and return to setup
 
-## Calculator Features
+## Preset Pets
 
-### Basic Calculator (Portrait Mode)
+The app comes with 6 preset pets:
+- **Metrocon** - Classic smiley face
+- **Tweety** - Happy bird
+- **Meowth** - Cat-like character
+- **Pakkun** - Playful character
+- **Bugs** - Bug character
+- **Kowalski** - Penguin character
 
-- **Operations**: Addition (+), Subtraction (−), Multiplication (×), Division (÷)
-- **Functions**: Clear (C), Backspace, Sign toggle (±), Percentage (%)
-- **Memory**: Memory Clear (MC), Memory Recall (MR), Memory Add (M+)
-- **Input**: Decimal point support
+Each preset has predefined animations for all states.
 
-### Scientific Calculator (Landscape Mode)
+## Technologies Used
 
-- **Trigonometric Functions**: sin, cos, tan (with Deg/Rad/Grad modes)
-- **Logarithmic Functions**: ln, log, 10ˣ
-- **Power Functions**: x², xʸ, √ (square root)
-- **Special Functions**: π (pi), n! (factorial)
-- **All basic calculator features**
+- **Svelte 4** - Reactive UI framework
+- **Capacitor 5** - Cross-platform native runtime
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Iconify** - Icon library
+- **TypeScript** - Type safety (configuration)
+
+## Scripts
+
+- `pnpm run dev` - Start development server
+- `pnpm run build` - Build for production
+- `pnpm run preview` - Preview production build
+- `pnpm run android:sync` - Sync web assets with Android project
+- `pnpm run android:open` - Open Android project in Android Studio
+- `pnpm run android:run` - Build, sync, and open Android project
+- `pnpm run android:build` - Build and sync with Android
+- `pnpm run android:apk` - Build and generate APK
 
 ## Configuration
 
 ### Capacitor Config
 
-The main configuration is in `capacitor.config.ts`:
-
-- **appId**: `com.metrocalculator.app`
-- **appName**: `Metro Calculator`
+Main configuration is in `capacitor.config.ts`:
+- **appId**: `com.metropet.app`
+- **appName**: `Metro Pet`
 - **webDir**: `dist`
 
-### Display Features
+### Animation Configuration
 
-- **Auto-scaling font**: Font size automatically adjusts from 6rem to 2rem based on expression length
-- **Horizontal scrolling**: When font reaches minimum size, horizontal scrolling is enabled
-- **Smart scrolling**: Auto-scrolls to show new input, but allows manual scrolling to view previous content
-
-## Building for Production
-
-### 1. Build the Web App
-
-```bash
-pnpm run build
-```
-
-### 2. Sync with Android
-
-```bash
-pnpm run android:sync
-```
-
-### 3. Build APK/AAB in Android Studio
-
-1. Open the project in Android Studio
-2. Go to **Build > Generate Signed Bundle / APK**
-3. Follow the wizard to create a signed release build
-
-The debug APK will be available at:
-```
-android/app/build/outputs/apk/debug/app-debug.apk
-```
-
-## Important Notes
-
-### Fullscreen Mode & Custom Status Bar
-
-The app runs in fullscreen mode with a custom status bar:
-- System status bar is hidden
-- Custom status bar component shows time
-- Content area has proper padding to account for the custom status bar
-- Configured in `src/main.js` using Capacitor's StatusBar plugin
-
-### Orientation Handling
-
-- The calculator automatically detects device orientation
-- Portrait mode shows basic calculator (4 columns, 6 rows)
-- Landscape mode shows scientific calculator (8 columns, 5 rows)
-- Display area height: 35% (portrait) / 8rem (landscape)
-- Button grid height: 65% (portrait) / calc(100vh - 8rem) (landscape)
-
-### Expression Evaluation
-
-- Expressions are built as strings (e.g., "5+3×2")
-- Evaluation happens when the equals (=) button is pressed
-- Supports standard operator precedence
-- Scientific functions evaluate immediately and update the expression
-
-## Troubleshooting
-
-### Build Errors
-
-- **"Module not found"**: Run `pnpm install` again
-- **"Capacitor not found"**: Make sure Capacitor is installed: `pnpm install @capacitor/cli @capacitor/core @capacitor/android`
-
-### Android Studio Issues
-
-- **Gradle sync fails**: Update Android Studio and Gradle
-- **SDK not found**: Install required SDK versions in Android Studio's SDK Manager
-- **Package name mismatch**: Make sure `capacitor.config.ts`, `build.gradle`, and `strings.xml` all use `com.metrocalculator.app`
-
-### Display Issues
-
-- **Font not scaling**: Check browser console for errors in `adjustFontSize` function
-- **Buttons cut off**: Ensure viewport height calculations are correct in CSS
-- **Expression not showing**: Check that `displayText` reactive variable is working
-
-## Available Scripts
-
-- `pnpm run dev` - Start development server on port 7773
-- `pnpm run build` - Build production bundle
-- `pnpm run preview` - Preview production build
-- `pnpm run android:sync` - Sync web assets with Android project
-- `pnpm run android:open` - Open Android project in Android Studio
-- `pnpm run android:build` - Build and sync with Android
-- `pnpm run android:apk` - Build and generate debug APK
+Animation definitions are in `src/utils/petAnimations.js`:
+- Preset pet animations are defined in `presetPetAnimations` object
+- Custom pet animations are stored in `localStorage` as `custom_pet_data`
+- Animation selection logic is in `getCurrentAnimation()` function
 
 ## License
 
-GNU General Public License v3.0 - See LICENSE file for details.
-
-## Credits
-
-- Built with [Svelte](https://svelte.dev/)
-- Native Android integration via [Capacitor](https://capacitorjs.com/)
-- UI design inspired by Microsoft Metro/Windows Phone design language
-- Icons from [Iconify](https://iconify.design/)
+See LICENSE file for details.
